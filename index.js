@@ -21,7 +21,7 @@ mongoose.connect(config.mongoURI, {
   .catch(err => console.log('err'))
 
 app.get('/', (req, res) => {
-  res.send('Hello World! 안녕하세요~')
+  res.send('Hello World! 안녕하세요~ hi')
 })
 
 app.post('/register', (req, res)  => {
@@ -30,7 +30,7 @@ app.post('/register', (req, res)  => {
     const user = new User(req.body) //request body로 클라이언트에 보내는 정보를 받는다.
 
     user.save((err, userInfo) => {//몽고DB에서 오는 메소드. save. 정보들이 user 모델에 저장.
-      if(err) return res.jseon({success: false, err}) //에러가 났을 때 에러메시지 전달
+      if(err) return res.json({success: false, err}) //에러가 났을 때 에러메시지 전달
       return res.status(200).json({ // status(200) = 성공
         success: true
       })
