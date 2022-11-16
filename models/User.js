@@ -49,8 +49,20 @@ userSchema.pre('save', function(next){
                 next()
             })
         })
+    } else {
+        next()
     }
 })
+
+//Bcrypt를 이용하여 plain password와 암호화된(Hashed) password가 같은지 확인
+userSchema.methods.comparePassword = function(plainPassword, cb){ // cd = callback function
+    //plainPassword 12345678    암호화된 비밀번호 $2b$10$eeDCbIo8ron8akXFNPqecOTBjxAP0BLNCnDCDR72d63tNC8lu8nGu
+    //위 두개가 같은지 확인하기위해선 암호화된것을 복호화 할 수는 없기때문에 plainPassword를 암호화해서 같은지 확인해야함
+    bcrypt.compare(plainPassword, this.password, function(err, isMatch){
+        if(err) return cb(err),
+            cb(null, isMatch)
+    })
+}
 
 const User = mongoose.model('User', userSchema)
 

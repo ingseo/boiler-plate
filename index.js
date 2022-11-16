@@ -37,7 +37,24 @@ app.post('/register', (req, res)  => {
     })
 })
 
+app.post('/login'), (req, res) => {
+  // 요청된 이메일을 데이터베이스에서 있는지 찾는다.
+  User.findOne({ email: req.body.email }, (err,user) => { //몽고DB에서 제공하는 메소드
+    if(!user){
+      return res.json({
+        loginSuccess: false,
+        massage: "제공된 이메일에 해당하는 유저가 없습니다."
+      })
+    }
+    // 요청된 이메일이 데이터 베이스에 있다면 비밀번호가 맞는 비밀번호인지 확인
+    user.comparePassword(req.body.password, (err, isMatch) => { //comparePassword는 지정메소드가 아니기 때문에 이름은 바꿔도 된다. 단 User.js에서도 바꿔줘야한다.
 
+    })
+  })
+
+  
+  // 비밀번호까지 맞다면 토큰을 생성
+}
 
 
 
