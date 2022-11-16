@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+var jwt = require('jsonwebtoken');
 
 //schema = 특정 정보를 지정해주는 일
 //model = schema를 감싸주는 역할
@@ -59,10 +60,25 @@ userSchema.methods.comparePassword = function(plainPassword, cb){ // cd = callba
     //plainPassword 12345678    암호화된 비밀번호 $2b$10$eeDCbIo8ron8akXFNPqecOTBjxAP0BLNCnDCDR72d63tNC8lu8nGu
     //위 두개가 같은지 확인하기위해선 암호화된것을 복호화 할 수는 없기때문에 plainPassword를 암호화해서 같은지 확인해야함
     bcrypt.compare(plainPassword, this.password, function(err, isMatch){
-        if(err) return cb(err),
+        if(err) return cb(err);
             cb(null, isMatch)
     })
 }
+
+userSchema.methods.generateToken = function(cb){
+    var user = this;
+    //jsonwebtoken을 이용해서 token을 생성하기
+    var token = jwt.sign(user._id.toHexString() , 'secretToken'); //user._id는 데이터 베이스에 존재하는 각각의 객체 아이디
+    //user._id + 'secreatToken = token > 'secretToken'으로부터 user._id 알수있음'
+    user.token = token
+    user.save(function(err, user){
+        if(err) return cb(err);
+        cb(null, user)
+    })
+}
+
+
+
 
 const User = mongoose.model('User', userSchema)
 
