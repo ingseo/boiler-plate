@@ -28,6 +28,8 @@ app.get('/', (req, res) => {
   res.send('Hello World! 안녕하세요~ hi')
 })
 
+
+// sign in route
 app.post('/api/users/register', (req, res)  => { // post = 눈에 보이지 않는 주소를입력받아 실행할 사항들을 나타내는 라우트함수
   // 목표 : 회원 가입 할 때 필요한 정보들을 client에서 가져오면 그것들을 데이터 베이스에 넣어준다.
   
@@ -41,6 +43,8 @@ app.post('/api/users/register', (req, res)  => { // post = 눈에 보이지 않�
     })
 })
 
+
+// login route
 app.post('/api/users/login', (req, res) => {
   // 요청된 이메일을 데이터베이스에서 있는지 찾는다.
   User.findOne({ email: req.body.email }, (err,user) => { //몽고DB에서 제공하는 메소드
@@ -69,6 +73,8 @@ app.post('/api/users/login', (req, res) => {
   })
 })
 
+
+// auth route
 app.get('/api/users/auth', auth ,(req, res) =>{//get = 주소창에 입력 받았을 때 실행할 사항들을 나타내는 라우트함수
 // 미들웨어 = /api~에 리퀘스트를 받은 다음에, 콜백펑션 해주기 전에 중간에서 뭔가 해주는 것 (여기선 auth)
 //여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 True라는 말
@@ -84,6 +90,19 @@ app.get('/api/users/auth', auth ,(req, res) =>{//get = 주소창에 입력 받�
   })
 }) 
 
+
+// logout route
+app.get('/api/users/logout', auth, (req, res) => {//auth 과정을 통해 토큰 복호화~ user id를 찾는것까지 동일.
+  User.findOneAndUpdate({ _id:req.user._id },//user id를 찾아서 그 상태를 업데이트(삭제) 시키는 것
+    {token: ""},
+    (err, user) => {
+      if(err) return res.json({success: false, err});
+      return res.status(200).send({
+        success: true
+      })
+    })
+  
+})
 
 
 

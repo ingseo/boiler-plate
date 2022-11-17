@@ -1,7 +1,6 @@
 const {User} = require('../models/User');
 
 let auth = (req, res, next) => {
-
     // 인증 처리 (클라이언트 <-> 데이터베이스 토큰 비교)
 
     // 클라이언트 쿠키에서 토큰을 가져온다.
@@ -18,7 +17,6 @@ let auth = (req, res, next) => {
     })
 
     // user_id가 있으면 인증 Okey
-
     // user_id가 없으면 인증  No!
 
 }
