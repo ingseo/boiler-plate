@@ -7,6 +7,7 @@ const mongoose = require('mongoose')
 
 const config = require('./config/key')
 
+const { auth } = require('./middleware/auth')
 const { User } = require('./models/User');
 
 //bodyparser = 클라이언트에서 오는 정보를 분석해서 가져올 수 있게 해주는 역할
@@ -27,7 +28,7 @@ app.get('/', (req, res) => {
   res.send('Hello World! 안녕하세요~ hi')
 })
 
-app.post('/register', (req, res)  => {
+app.post('/api/users/register', (req, res)  => { // post = 눈에 보이지 않는 주소를입력받아 실행할 사항들을 나타내는 라우트함수
   // 목표 : 회원 가입 할 때 필요한 정보들을 client에서 가져오면 그것들을 데이터 베이스에 넣어준다.
   
     const user = new User(req.body) //request body로 클라이언트에 보내는 정보를 받는다.
@@ -36,11 +37,11 @@ app.post('/register', (req, res)  => {
       if(err) return res.json({success: false, err}) //에러가 났을 때 에러메시지 전달
       return res.status(200).json({ // status(200) = 성공
         success: true
-      })
+      }) // user의 결과값을 return?
     })
 })
 
-app.post('/login', (req, res) => {
+app.post('/api/users/login', (req, res) => {
   // 요청된 이메일을 데이터베이스에서 있는지 찾는다.
   User.findOne({ email: req.body.email }, (err,user) => { //몽고DB에서 제공하는 메소드
     if(!user){
@@ -68,7 +69,20 @@ app.post('/login', (req, res) => {
   })
 })
 
-
+app.get('/api/users/auth', auth ,(req, res) =>{//get = 주소창에 입력 받았을 때 실행할 사항들을 나타내는 라우트함수
+// 미들웨어 = /api~에 리퀘스트를 받은 다음에, 콜백펑션 해주기 전에 중간에서 뭔가 해주는 것 (여기선 auth)
+//여기까지 미들웨어를 통과해 왔다는 얘기는 Authentication이 True라는 말
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true, //role이 0이 아니면 관리자인것으로 지정해놨음
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
+  })
+}) 
 
 
 
