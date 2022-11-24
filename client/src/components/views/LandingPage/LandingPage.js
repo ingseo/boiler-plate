@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
 
 function LandingPage() {
   //랜딩페이지에 들어오자마자, 아래 함수를 실행한다.
@@ -8,12 +9,33 @@ function LandingPage() {
       .then(response => console.log(response.data)) //보낸 다음에 서버에서 돌아오는 response를 콘솔창에 보여준다.
     }, [])
 
+    const navigate = useNavigate();
+
+    const onClickHandler = () => {
+      axios.get('/api/users/logout')
+      .then(response => {
+        if(response.data.success){
+          navigate('/login')
+        } else{
+          alert('로그아웃하는데 실패했습니다.')
+        }
+      })
+    }
 
   return (
     <div style={{
       display: 'flex', justifyContent: 'center', alignItems: 'center',
-      width: '100%', height: '100vh', fontWeight: 'bold',
-    }}>시작 페이지</div>
+      flexDirection: 'column', width: '100%', height: '100vh',
+    }}>
+    
+    <h2>시작 페이지</h2>
+    <div style={{marginTop: '10px'}}>
+      <button onClick={onClickHandler} style={{
+        cursor: 'pointer', border: '2px solid #333', borderRadius: '10px',
+        padding: '5px', fontWeight: 'bold', backgroundColor: '#999', color: '#fff',
+      }}>Logout</button>
+    </div>
+    </div>
   )
 }
 
