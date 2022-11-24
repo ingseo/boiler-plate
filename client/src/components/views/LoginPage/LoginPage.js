@@ -39,7 +39,6 @@ function LoginPage() {
           alert('아이디나 비밀번호가 틀렸습니다.')
         }
       })
-    
   }
 
   return (

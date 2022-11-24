@@ -1,5 +1,6 @@
 import axios from "axios";
 import { LOGIN_USER } from './types'
+import { REGISTER_USER } from './types'
 
 export function loginUser(dataToSubmit){
     const request = axios.post('/api/users/login', dataToSubmit)
@@ -12,4 +13,14 @@ export function loginUser(dataToSubmit){
     //리턴을 시켜서 리듀서로 보낸다.
     // html메소드, post를 이용하여 백엔드쪽, 로그인api에 정보를 보내준다. 
     //이후 토큰 비교 등등 로그인확인 절차진행
+}
+
+export function registerUser(dataToSubmit){
+    const request = axios.post('/api/users/register', dataToSubmit)
+    .then(response => response.data ) 
+    
+    return{
+        type: REGISTER_USER,
+        payload: request, 
+    }
 }
