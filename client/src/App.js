@@ -11,15 +11,21 @@ import {
 import LandingPage from './components/views/LandingPage/LandingPage'
 import LoginPage from './components/views/LoginPage/LoginPage'
 import RegisterPage from './components/views/RegisterPage/RegisterPage'
+import Auth from './hoc/auth'
 
 function App() {
+  const AuthLandingPage = Auth(LandingPage, null)
+  const AuthLoginPage = Auth(LoginPage, false)
+  const AuthRegisterPage = Auth(RegisterPage, false)
+  //Auth(SpecificComponent, option, adminRoute)
+
   return (
       <Router>
         <div>
           <Routes>
-            <Route exact path="/" element={<LandingPage />} />
-            <Route path="/Login" element={<LoginPage />} />
-            <Route path="/Register" element={<RegisterPage />} /> 
+            <Route exact path="/" element={<AuthLandingPage />} />
+            <Route path="/Login" element={<AuthLoginPage />} />
+            <Route path="/Register" element={<AuthRegisterPage />} /> 
           </Routes>
         </div>
       </Router>

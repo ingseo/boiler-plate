@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function LandingPage() {
   //랜딩페이지에 들어오자마자, 아래 함수를 실행한다.
@@ -10,6 +11,7 @@ function LandingPage() {
     }, [])
 
     const navigate = useNavigate();
+    const user = useSelector(state => state.user)
 
     const onClickHandler = () => {
       axios.get('/api/users/logout')
@@ -22,6 +24,11 @@ function LandingPage() {
       })
     }
 
+  // 안되는 코드...
+  //  if(user.userData.isAuth == false){
+  //   console.log('로그인버튼 없어야함')
+  // }
+  
   return (
     <div style={{
       display: 'flex', justifyContent: 'center', alignItems: 'center',
@@ -30,7 +37,7 @@ function LandingPage() {
     
     <h2>시작 페이지</h2>
     <div style={{marginTop: '10px'}}>
-      <button onClick={onClickHandler} style={{
+      <button id='logoutBtn' onClick={onClickHandler} style={{
         cursor: 'pointer', border: '2px solid #333', borderRadius: '10px',
         padding: '5px', fontWeight: 'bold', backgroundColor: '#999', color: '#fff',
       }}>Logout</button>
