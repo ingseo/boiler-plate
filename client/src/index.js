@@ -5,25 +5,34 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 // import { DatePicker } from 'antd';
-import { legacy_createStore as createStore, applyMiddleware } from 'redux'
+import { legacy_createStore as createStore, applyMiddleware, compose } from 'redux'
 import promiseMiddleware from 'redux-promise';
 import ReduxThunk from 'redux-thunk';
 import Reducer from './_reducer';
 
-const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore);
+import persistedReducer from './_reducer';	
+import { persistStore } from 'redux-persist';	
+import { PersistGate } from 'redux-persist/es/integration/react';
 
+// const createStoreWithMiddleware = applyMiddleware(promiseMiddleware, ReduxThunk)(createStore);
+
+const store = createStore(persistedReducer, compose(
+  applyMiddleware(promiseMiddleware, ReduxThunk),
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
+)
+)
+const persistor = persistStore(store)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
   //   <App />
   // </React.StrictMode>
-    <Provider 
-      store={createStoreWithMiddleware(Reducer,
-        window.__REDUX_DEVTOOLS_EXTENSION__ &&
-        window.__REDUX_DEVTOOLS_EXTENSION__()
-      )}
+    <Provider
+      store={store}
     >
+      <PersistGate persistor={persistor}>
         <App />
+      </PersistGate>
     </Provider>,
   );
 

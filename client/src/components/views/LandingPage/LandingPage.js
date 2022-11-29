@@ -1,17 +1,26 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function LandingPage() {
+
+  const navigate = useNavigate();
+  const user = useSelector(state => state.user)
+
   //랜딩페이지에 들어오자마자, 아래 함수를 실행한다.
     useEffect(() => { // useEffect 함수는 리액트 컴포넌트가 렌더링 될 때마다 특정 작업을 실행할 수 있도록 하는 Hook이다.
       axios.get('/api/hello') //get request를 서버에다 보낸다. 그것의 엔드포인트는 해당 주소이다.
       .then(response => console.log(response.data)) //보낸 다음에 서버에서 돌아오는 response를 콘솔창에 보여준다.
+      
+      console.log(user.userData.isAuth)
+      
+      if(user.userData.isAuth == false){
+        document.getElementById('logoutBtn').style.display = 'none';
+      } else if(user.userData.isAuth == true) {
+        document.getElementById('logoutBtn').style.display = 'block';
+      }
     }, [])
-
-    const navigate = useNavigate();
-    const user = useSelector(state => state.user)
 
     const onClickHandler = () => {
       axios.get('/api/users/logout')
@@ -23,11 +32,7 @@ function LandingPage() {
         }
       })
     }
-
-  // 안되는 코드...
-  //  if(user.userData.isAuth == false){
-  //   console.log('로그인버튼 없어야함')
-  // }
+    
   
   return (
     <div style={{
